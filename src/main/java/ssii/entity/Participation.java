@@ -3,6 +3,7 @@ package ssii.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 
 import lombok.*;
@@ -18,39 +19,33 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @ToString
-public class Personne {
+
+public class Participation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     @Setter(AccessLevel.NONE) // la clé est auto-générée par la BD, On ne veut pas de "setter"
-    private Integer matricule;
+    private Integer id;
 
     @NonNull
     @Column(unique=true, length = 255)
     @Size(min = 1, max = 255)
-    private String nom;
+    private String role;
 
+    @Basic(optional = false)
+    @Column(nullable = false)
     @NonNull
-    @Column(unique=true, length = 255)
-    @Size(min = 1, max = 255)
-    private String Prenom;
+    @PositiveOrZero(message = "La quantité ne peut pas être négative")
+    private Integer pourcentage;
 
+    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
     @NonNull
-    @Column(unique=true, length = 255)
-    @Size(min = 1, max = 255)
-    private String poste;
+    private Projet affectation;
 
-    @ToString.Exclude
-    @OneToMany(mappedBy = "contributeur")
-    private List<Participation> participations = new LinkedList<>();
-
-    @OneToMany(mappedBy = "superieur")
-    private List<Personne>subordonnes = new LinkedList<>();
-
-    @ManyToOne
-    private Personne superieur;
-
-
-
+    @JoinColumn(nullable = false)
+    @ManyToOne(optional = false)
+    @NonNull
+    private Personne contributeur;
 }

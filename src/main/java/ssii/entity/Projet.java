@@ -1,5 +1,4 @@
 package ssii.entity;
-
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,39 +17,31 @@ import java.util.List;
 @NoArgsConstructor
 @RequiredArgsConstructor
 @ToString
-public class Personne {
+public class Projet {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(nullable = false)
     @Setter(AccessLevel.NONE) // la clé est auto-générée par la BD, On ne veut pas de "setter"
-    private Integer matricule;
+    private Integer code;
+
+    @Basic(optional = false)
+    @Column(nullable = false)
+    @ToString.Exclude
+    // Initialisée avec la date de création
+    private LocalDate debut = LocalDate.now();
+
+    @Basic(optional = true)
+    @ToString.Exclude
+    private LocalDate fin = null;
 
     @NonNull
     @Column(unique=true, length = 255)
     @Size(min = 1, max = 255)
     private String nom;
 
-    @NonNull
-    @Column(unique=true, length = 255)
-    @Size(min = 1, max = 255)
-    private String Prenom;
-
-    @NonNull
-    @Column(unique=true, length = 255)
-    @Size(min = 1, max = 255)
-    private String poste;
-
+    @OneToMany(mappedBy = "affectation")
     @ToString.Exclude
-    @OneToMany(mappedBy = "contributeur")
     private List<Participation> participations = new LinkedList<>();
-
-    @OneToMany(mappedBy = "superieur")
-    private List<Personne>subordonnes = new LinkedList<>();
-
-    @ManyToOne
-    private Personne superieur;
-
-
 
 }
